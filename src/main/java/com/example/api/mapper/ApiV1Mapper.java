@@ -76,9 +76,9 @@ public class ApiV1Mapper {
         return COREV1API.createPersistentVolume(pvBody(volumeDTO), pretty, dryRun, fieldManager);
     }
 
-    public V1StorageClass addStorageApi(DeploymentDTO.VolumeDTO volumeDTO) throws ApiException {
-        return STORAGEV1API.createStorageClass(scBody(volumeDTO), pretty, dryRun, fieldManager);
-    }
+//    public V1StorageClass addStorageApi(DeploymentDTO.VolumeDTO volumeDTO) throws ApiException {
+//        return STORAGEV1API.createStorageClass(scBody(volumeDTO), pretty, dryRun, fieldManager);
+//    }
 
     /**
      * NFS
@@ -108,14 +108,14 @@ public class ApiV1Mapper {
 
         V1Service body = new V1ServiceBuilder()
                 .withNewMetadata()
-                    .withName(serviceDTO.getServiceName())
-                    .withLabels(selectLabels)
-                    .endMetadata()
+                .withName(serviceDTO.getServiceName())
+                .withLabels(selectLabels)
+                .endMetadata()
                 .withNewSpec()
-                    .withType(serviceDTO.getServiceType())
-                    .withSelector(selectLabels)
-                    .withPorts(servicePort)
-                    .endSpec()
+                .withType(serviceDTO.getServiceType())
+                .withSelector(selectLabels)
+                .withPorts(servicePort)
+                .endSpec()
                 .build();
 
         return body;
@@ -157,7 +157,7 @@ public class ApiV1Mapper {
                 .withLabels(selectLabels)
                 .endMetadata()
                 .withNewSpec()
-                .withVolumeName(volumeDTO.getPvcName()) //
+                .withVolumeName(volumeDTO.getPvName()) // PV name
 //                    .withStorageClassName(volumeDTO.getStorageClassName()) // storageClass
                 .withAccessModes(volumeDTO.getAccessModes())
                 .withNewResources()
@@ -202,13 +202,13 @@ public class ApiV1Mapper {
                                                         .build())
                                                 // volume mount
                                                 .withVolumeMounts(new V1VolumeMount()
-                                                        .name("test-huhyun-vm")
-                                                        .mountPath(nfs().getPath()))
+                                                        .name("pvc-vm")
+                                                        .mountPath(nfs().getPath())) //
                                                 .build())
                                         // volume setting
                                         .withVolumes(new V1VolumeBuilder()
-                                                .withName("test-huhyun-vm")
-                                                .withPersistentVolumeClaim(new V1PersistentVolumeClaimVolumeSource().claimName(deploymentDTO.getVolumeDTO().getPvcName()))
+                                                .withName("pvc-vm")
+                                                .withPersistentVolumeClaim(new V1PersistentVolumeClaimVolumeSource().claimName(deploymentDTO.getVolumeDTO().getPvcName())) // PVC Name
                                                 .build())
                                         .build())
                                 .build())

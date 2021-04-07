@@ -1,8 +1,6 @@
 package com.example.service;
 
 import com.example.api.dto.DeploymentDTO;
-import com.example.api.dto.DeploymentListDTO;
-import com.example.api.dto.DeploymentDetailsDTO;
 import com.example.api.mapper.ApiV1Mapper;
 import com.google.gson.GsonBuilder;
 import io.kubernetes.client.openapi.ApiException;
@@ -24,24 +22,24 @@ public class DeploymentService {
 
     private final ApiV1Mapper apiMapper;
 
-    public List<DeploymentListDTO> findNamespacedDeployment(String namespace) throws ApiException {
+    public List<DeploymentDTO> findNamespacedDeployment(String namespace) throws ApiException {
         V1DeploymentList deployments = apiMapper.addAppsV1Api(namespace);
 
         log.info("Deployments.app INFO \n{}", new GsonBuilder().setPrettyPrinting().create().toJson(deployments));
 
         return Optional.ofNullable(deployments)
                 .map(v1DeploymentList -> v1DeploymentList.getItems().stream()
-                        .map(DeploymentListDTO::new)
+                        .map(DeploymentDTO::new)
                         .collect(Collectors.toList())
                 ).orElse(null);
     }
 
-    public DeploymentDetailsDTO findNamespacedDeploymentDetails(String namespace, String name) throws ApiException {
+    public DeploymentDTO findNamespacedDeploymentDetails(String namespace, String name) throws ApiException {
         V1Deployment deployment = apiMapper.addAppsV1Api(name,namespace);
 
         log.info("Details Deployments.app INFO \n{}", new GsonBuilder().setPrettyPrinting().create().toJson(deployment));
 
-        return new DeploymentDetailsDTO(deployment);
+        return new DeploymentDTO(deployment);
     }
 
     public void createNamespacedDeployment(String namespace, DeploymentDTO saveResponseDTO) throws ApiException {
