@@ -203,7 +203,7 @@ public class ApiV1Mapper {
                                                 // volume mount
                                                 .withVolumeMounts(new V1VolumeMount()
                                                         .name("pvc-vm")
-                                                        .mountPath(nfs().getPath())) //
+                                                        .mountPath("huhyun-volume-path")) //
                                                 .build())
                                         // volume setting
                                         .withVolumes(new V1VolumeBuilder()
